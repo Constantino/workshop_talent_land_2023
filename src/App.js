@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './App.css';
 import Button from '@mui/material/Button';
 import NFTCard from "./NFTCard";
 import Box from '@mui/material/Box';
@@ -55,6 +54,9 @@ function App() {
         const signer = provider.getSigner();
         const connectedContract = new ethers.Contract(nft.token_address, NftContractAbi, signer);
         let nftTxn = await connectedContract['safeTransferFrom(address,address,uint256)'](nft.owner_of, addressTo, nft.token_id);
+        
+        console.log("tx: ", nftTxn);
+
         handleClose();
         
       } else {
@@ -73,7 +75,7 @@ function App() {
         
     async function fetchData() {
         try {          
-            if( currentAccount == "undefined") return;
+            if( !currentAccount ) return;
 
             let urlToFetch = `https://deep-index.moralis.io/api/v2/${currentAccount}/nft`;
         
@@ -91,7 +93,7 @@ function App() {
             const resp = await fetch(urlToFetch+"?"+ myParams, requestOptions);
             const result = await resp.json();
             console.log(result)
-            setNftData(result.result.filter( (e) => e.token_address != "0xc6e03d9d29e033dcb08f998bfc0fe3c245577bac"));
+            setNftData(result.result.filter( (e) => e.token_address !== "0xc6e03d9d29e033dcb08f998bfc0fe3c245577bac"));
 
         } catch (error) {
             console.error(error);
@@ -105,7 +107,7 @@ function App() {
     try {
       const ethereum = window.ethereum;
       if(!ethereum) {
-        alert("Get metamask");
+        alert("Get metamask wallet.");
         return;
       }
 
@@ -133,29 +135,27 @@ function App() {
                     { nftData.map(
                         (_, index) => (
                         <Grid xs={2} sm={3} md={3} key={index} >
-                                {
-                                    
-                                    !!nftData[index].metadata ? (
-                                        <NFTCard 
-                                        nft={ nftData[index] }
-                                        title={ !!JSON.parse(nftData[index].metadata).name ? JSON.parse(nftData[index].metadata).name : "" }
-                                        subheader={ !!nftData[index].name ? nftData[index].name : "" }
-                                        image={ !!JSON.parse(nftData[index].metadata).image ? JSON.parse(nftData[index].metadata).image : "" }
-                                        description={ !!JSON.parse(nftData[index].metadata).description ? JSON.parse(nftData[index].metadata).description : ""} 
-                                        selectNft={ setSelectedNft }
-                                        modalOpener={ setOpenModal }
-                                        />
-                                    ) : (
-                                        <NFTCard 
-                                            title="Awaiting metadata..."
-                                            subheader="Awaiting metadata..."
-                                            image=""
-                                            description=""
-                                        />
-                                    )
-
-                                } 
-                            
+                          {
+                              
+                            !!nftData[index].metadata ? (
+                                <NFTCard 
+                                nft={ nftData[index] }
+                                title={ !!JSON.parse(nftData[index].metadata).name ? JSON.parse(nftData[index].metadata).name : "" }
+                                subheader={ !!nftData[index].name ? nftData[index].name : "" }
+                                image={ !!JSON.parse(nftData[index].metadata).image ? JSON.parse(nftData[index].metadata).image : "" }
+                                description={ !!JSON.parse(nftData[index].metadata).description ? JSON.parse(nftData[index].metadata).description : ""} 
+                                selectNft={ setSelectedNft }
+                                modalOpener={ setOpenModal }
+                                />
+                            ) : (
+                                <NFTCard 
+                                    title="Awaiting metadata..."
+                                    subheader="Awaiting metadata..."
+                                    image=""
+                                    description=""
+                                />
+                            )
+                          } 
                         </Grid>
                     ))}
                 </Grid>

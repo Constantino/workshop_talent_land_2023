@@ -5,7 +5,6 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
 
@@ -40,7 +39,7 @@ export default function NFTCard({
             </Typography>
         </CardContent>
         <CardActions disableSpacing>
-            <Button variant="contained" endIcon={ <SendIcon /> } onClick={ () => {selectNft(nft); modalOpener(true)} } >
+            <Button variant="contained" endIcon={ <SendIcon /> } onClick={ () => { selectNft(nft); modalOpener(true); } } >
                 Transfer
             </Button>
           </CardActions>
